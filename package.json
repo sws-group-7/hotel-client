@@ -1,0 +1,15 @@
+{
+  "name": "hotel api client",
+  "main": "index.html",
+  "window": {
+    "width": 900,
+    "height": 600,
+    "position": "center",
+    "toolbar": true,
+    "title": "hotel api client",
+    "resizable": true
+  },
+  "dependencies": {
+    "circular-json": "^0.5.4"
+  }
+}

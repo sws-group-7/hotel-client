@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hotel API Client</title>
+    <meta charset="UTF-8" />
+
+    <!-- modules -->
+    <script type="text/javascript" src="./js/jquery.js"></script>
+    <script type="text/javascript" src="./js/app.js"></script>
+    <script type="text/javascript" src="./js/uikit/uikit.min.js"></script>
+
+    <!-- css -->
+    <link rel="stylesheet" href="./css/uikit.min.css" />
+
+    <!-- highlight
+    <link rel="stylesheet" href="./css/styles/github.css">
+    <script src="./js/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+     -->
+  </head>
+
+  <body>
+	  <div id="idUrl">
+		  <h1>Url Bar</h1>
+		  <div class="uk-grid">
+		  	<input type="text" value="" placeholder="http://" id="idUrlInput" class="uk-width-5-6"></input>
+		  	<button id="idUrlLoad" class="uk-button uk-width-1-6"> load </button>
+		  </div>
+	  </div>
+	  <div id="idResponse">
+		  <h1>Response</h1>
+		  <pre>
+		  	<code id="idResponseCode">
+			</code>
+		  </pre>
+	  </div>
+	  <!--
+	  <div id="idHydraClasses">
+		  <h1>Classes</h1>
+		  <div id="idHydraClassesList">
+	  	  </div>
+	  </div>
+	  -->
+	  <div id="idDocumentations">
+		  <h1>Documentation</h1>
+		  <div id="idDocumentation">
+	  	  </div>
+	  </div>
+  </body>
+</html>

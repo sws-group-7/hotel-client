@@ -1,0 +1,5 @@
+{
+	"root": "https://sws-group-7-hotel-api.herokuapp.com",
+	"base": "https://sws-group-7-hotel-api.herokuapp.com/api/v1",
+	"entry": "#EntryPoint"
+}
