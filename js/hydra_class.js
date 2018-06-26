@@ -24,7 +24,31 @@ class HydraClass {
 			var prop_entity = new HydraProperty(prop);
 			context.properties.push(prop_entity);
 		});
+	}
 
+	// TODO: use template engine instead
+	toHtml(){
+		var panel ='<h3>'+this.name+'</h3>';
+		panel+='<div id="idProperties">';
+		panel+='<table>';
+		panel+='<tbody>';
+		this.properties.forEach(function(prop){
+			panel+='<tr><td>'+prop.name+':</td> <td><input type="text" value=""></input></td></tr>';
+		});
+		panel+='</tbody>';
+		panel+='</table>';
+		panel+='</div>';
+
+		panel+='<div id="idOperations">';
+		panel+='<table>';
+		panel+='<tbody>';
+		this.operations.forEach(function(op){
+			panel+='<tr><td>'+op.method+':</td> <td>'+op.description+'</td></tr>';
+		});
+		panel+='</tbody>';
+		panel+='</table>';
+		panel+='</div>';
+		return panel;	
 	}
 }
 
