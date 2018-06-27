@@ -62,16 +62,20 @@ class HydraClass {
 
 	bindButtons(){
 		var context = this;
-		var req_data = {};
-		//var data = context.$('form').serialize();
-		this.properties.forEach(function(prop){
-			req_data[prop.name] = context.$('#'+prop.id).val();
-		});
 
 		this.operations.forEach(function(op){
 			context.$('#'+op.button_id).click(function(e){
 				e.preventDefault();
 
+				// get request data
+				var req_data = {};
+				context.properties.forEach(function(prop){
+					req_data[prop.name] = context.$('#'+prop.id).val();
+				});
+				// [DEBUG]
+				//context.$form.setResponse(JSON.stringify(req_data,null,4));
+
+				// evaluate url
 				var is_collection_req = true;
 				var url_id = context.$('#'+op.button_id+'-id').val();
 				var url = null;
@@ -83,21 +87,19 @@ class HydraClass {
 					is_collection_req = true;
 				}
 
+				// send request
 				context.$.ajax({
 					type: op.method,
 					url: url,
 					dataType: "json",
+					data: req_data,
 					success: function(resp){
-						//context.$form.setUrl(url);
 						context.$form.setResponse(JSON.stringify(resp,null,4));
-						//if (!is_collection_req) {
-							context.properties.forEach(function(prop){
-								context.$('#'+prop.id).val(resp[prop.name]);
-							});
-						//}
+						context.properties.forEach(function(prop){
+							context.$('#'+prop.id).val(resp[prop.name]);
+						});
 					},
 					error: function(xhr, ajaxOptions, thrownError){
-						//context.$form.setUrl(url);
 						context.$form.setResponse('[ERROR]: ' + thrownError);
 					}
 				}); 
