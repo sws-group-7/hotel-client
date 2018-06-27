@@ -55,6 +55,7 @@ function loadDoc(doc){
 	var plural_classes = [];
 
 	// this is super hacky :/
+	var EntryPoint = null;
 	doc.api.classes.forEach(function(cl){
 		if(cl.label=="EntryPoint") {
 			cl.properties.forEach(function(prop){
@@ -68,12 +69,11 @@ function loadDoc(doc){
 		hydra_classes.push(class_entity);
 	});
 
+	//console.log(doc.api.operations);
+
 	hydra_classes.forEach(function(cl){
 		if (cl.name != undefined) {
-			console.log(cl.name);
-			console.log(plural_classes);
 			var match = StringSimilarity.findBestMatch(cl.name, plural_classes);
-			console.log(match.bestMatch.target);
 			cl.plural = match.bestMatch.target;
 		}
 	});

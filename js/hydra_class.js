@@ -5,7 +5,6 @@ var HydraProperty = require('./hydra_property.js');
 
 class HydraClass {
 	constructor(base, jquery, form, cl){
-		console.log(cl);
 
 		this.base = base;
 		this.$ = jquery;
@@ -19,9 +18,13 @@ class HydraClass {
 		var context = this;
 		// get operations
 		cl.operations.forEach(function(op){
-			var op_entity = new HydraOperation(op);
-			context.operations.push(op_entity);
+			if (op != undefined) {
+				var op_entity = new HydraOperation(op);
+				context.operations.push(op_entity);
+			}
 		});
+		// artifical post because hydra core won't work
+		this.operations.push({iri: "bla", method: "POST", description: "create"});
 
 		// get properties
 		cl.properties.forEach(function(prop){
@@ -50,8 +53,13 @@ class HydraClass {
 		panel+='<tbody>';
 		this.operations.forEach(function(op){
 			op.button_id = context.name+"-"+op.method;
-			panel += '<tr class="uk-width-1-5"><td><button id="'+op.button_id+'">'+op.method+'</button>' + 
-				 '<input class="uk-width-1-6" type="text" id="'+op.button_id+'-id'+'"></input></td> <td>'+op.description+'</td></tr>';
+			if (op.method != "POST")
+				panel += '<tr class="uk-width-1-5"><td><button class="uk-button" id="'+op.button_id+'">'+op.method+'</button>' + 
+				'<input class="uk-width-1-6" type="text" id="'+op.button_id+'-id'+'"></input></td> <td>'+op.description+'</td></tr>';
+			else
+				panel += '<tr class="uk-width-1-5"><td><button class="uk-button" id="'+op.button_id+'">'+op.method+'</button>' + 
+				'</td> <td>'+op.description+'</td></tr>';
+
 		});
 		panel+='</tbody>';
 		panel+='</table>';
@@ -61,8 +69,8 @@ class HydraClass {
 	}
 
 	bindButtons(){
-		var context = this;
 
+		var context = this;
 		this.operations.forEach(function(op){
 			context.$('#'+op.button_id).click(function(e){
 				e.preventDefault();
@@ -72,8 +80,6 @@ class HydraClass {
 				context.properties.forEach(function(prop){
 					req_data[prop.name] = context.$('#'+prop.id).val();
 				});
-				// [DEBUG]
-				//context.$form.setResponse(JSON.stringify(req_data,null,4));
 
 				// evaluate url
 				var is_collection_req = true;
@@ -92,7 +98,7 @@ class HydraClass {
 					type: op.method,
 					url: url,
 					dataType: "json",
-					data: req_data,
+					data: (op.method=='PUT' || op.method=='POST') ? req_data : null,
 					success: function(resp){
 						context.$form.setResponse(JSON.stringify(resp,null,4));
 						context.properties.forEach(function(prop){
@@ -100,7 +106,7 @@ class HydraClass {
 						});
 					},
 					error: function(xhr, ajaxOptions, thrownError){
-						context.$form.setResponse('[ERROR]: ' + thrownError);
+						context.$form.setResponse('[ERROR]: ' + thrownError +'\n[DATA:]'+ JSON.stringify(req_data));
 					}
 				}); 
 			});
