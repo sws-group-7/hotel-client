@@ -12,6 +12,7 @@
   "dependencies": {
     "circular-json": "^0.5.4",
     "es6-promise": "^4.2.4",
-    "hydra-core": "0.0.2"
+    "hydra-core": "0.0.2",
+    "string-similarity": "^1.2.0"
   }
 }

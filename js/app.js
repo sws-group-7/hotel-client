@@ -2,6 +2,8 @@
 var win = nw.Window.get();
 win.showDevTools();
 
+// haacky
+var StringSimilarity = require('string-similarity');
 // config
 var ns = require('./config.json');
 var vocab = ns.base + '/vocab';
@@ -14,10 +16,6 @@ var HydraClass = require('./js/hydra_class.js');
 // circular
 var CircularJSON = require('circular-json');
 
-/* html elements */
-var $documentation = null;
-var $response = null;
-
 // for actions that are always available
 // can just be initialized when document already loaded
 var $form = null;
@@ -29,6 +27,7 @@ function loadApi(url, operation){
 			return HydraClient(url);
 		})
 		.then(function(api){
+			console.log(api);
 			operation(api);
 		})
 		.catch(function(error){
@@ -52,25 +51,49 @@ function getResponse(url, on_success){
 function loadDoc(doc){
 	
 	// get a class structure that's simpler to handle
-	var classes_array = [];
+	var hydra_classes = [];
+	var plural_classes = [];
+
+	// this is super hacky :/
 	doc.api.classes.forEach(function(cl){
-		var class_entity = new HydraClass(cl);
-		classes_array.push(class_entity);
+		if(cl.label=="EntryPoint") {
+			cl.properties.forEach(function(prop){
+				plural_classes.push(prop.title);
+			});
+		}
+	});
+	
+	doc.api.classes.forEach(function(cl){
+		var class_entity = new HydraClass($form.getUrl(), $, $form, cl);
+		hydra_classes.push(class_entity);
+	});
+
+	hydra_classes.forEach(function(cl){
+		if (cl.name != undefined) {
+			console.log(cl.name);
+			console.log(plural_classes);
+			var match = StringSimilarity.findBestMatch(cl.name, plural_classes);
+			console.log(match.bestMatch.target);
+			cl.plural = match.bestMatch.target;
+		}
 	});
 	
 	// ugh ugly and lazy use a template engine instead
 	var panel = '<div>';
-	classes_array.forEach(function(cl){
-		panel += cl.toHtml();
+	hydra_classes.forEach(function(cl){
+		if (cl.name != undefined && cl.name != "EntryPoint")
+			panel += cl.toHtml();
 	});
 	panel+='</div>';
 
-	$documentation.empty();
-	$documentation.append(panel);
+	$form.setDocumentation(panel);
 
 	getResponse($form.getUrl(), function(resp){
-		$response.empty();
-		$response.append(CircularJSON.stringify(resp, null, 4));
+		$form.setResponse(CircularJSON.stringify(resp, null, 4));
+	});
+
+	hydra_classes.forEach(function(cl){
+		cl.bindButtons();
 	});
 }
 
@@ -82,18 +105,14 @@ $(document).ready(function(){
 
 	$('#idUrlLoad').click(function(e){
 		e.preventDefault();
-		loadApi(vocab, loadDoc);
+		loadApi($form.getUrl(), loadDoc);
 	});
-
-	/* get html elements */
-	$documentation = $('#idDocumentation');
-	$response = $('#idResponseCode');
 
 	/* initial state */
 	$form.setUrl(ns.base);
-	//$form.setUrl('http://www.markus-lanthaler.com/hydra/api-demo/vocab');
+	//$form.setUrl('http://www.markus-lanthaler.com/hydra/api-demo');
 
 	// this is just to quick check if our api is generic enough
 	loadApi(ns.base, loadDoc);
-	//loadApi('http://www.markus-lanthaler.com/hydra/api-demo/vocab', loadDoc);
+	//loadApi('http://www.markus-lanthaler.com/hydra/api-demo', loadDoc);
 });
