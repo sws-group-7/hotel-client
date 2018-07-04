@@ -1,6 +1,8 @@
 // show dev tools (sdk only)
 var win = nw.Window.get();
 win.showDevTools();
+// warning this will actually enable kiosk mode
+//win.enterFullscreen();
 
 // haacky
 var StringSimilarity = require('string-similarity');
@@ -35,7 +37,6 @@ function loadApi(url, operation){
 		})
 };
 
-//function load(url, on_success){
 function getResponse(url, on_success){
 
 	$.ajax({
@@ -54,7 +55,6 @@ function loadDoc(doc){
 	var hydra_classes = [];
 	var plural_classes = [];
 
-	// this is super hacky :/
 	var EntryPoint = null;
 	doc.api.classes.forEach(function(cl){
 		if(cl.label=="EntryPoint") {
@@ -69,8 +69,7 @@ function loadDoc(doc){
 		hydra_classes.push(class_entity);
 	});
 
-	//console.log(doc.api.operations);
-
+	// this is super hacky :/
 	hydra_classes.forEach(function(cl){
 		if (cl.name != undefined) {
 			var match = StringSimilarity.findBestMatch(cl.name, plural_classes);
@@ -78,7 +77,6 @@ function loadDoc(doc){
 		}
 	});
 	
-	// ugh ugly and lazy use a template engine instead
 	var panel = '<div>';
 	hydra_classes.forEach(function(cl){
 		if (cl.name != undefined && cl.name != "EntryPoint")

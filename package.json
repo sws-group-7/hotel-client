@@ -1,5 +1,5 @@
 {
-  "name": "hotel api client",
+  "name": "hotel-api-client",
   "main": "index.html",
   "window": {
     "width": 900,
